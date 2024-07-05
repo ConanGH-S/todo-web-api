@@ -1,5 +1,6 @@
 import { PrismaClient, todo } from "@prisma/client";
 import { ITodoService } from "../interfaces/ITodoService.js";
+import { Todo } from "../../domain/entities/todo.js";
 
 export class TodoService implements ITodoService {
 
@@ -9,9 +10,9 @@ export class TodoService implements ITodoService {
     this._repository = repository;
   }
   
-  public async get(): Promise<todo[]> {
+  public async get(): Promise<Todo[]> {
     const data = await this._repository.todo.findMany();
-    return data;
+    return data.map(todo => new Todo(todo.id, todo.title, todo.description, todo.created_at, todo.updated_at, todo.deleted_at));
   }
 
   public async find(id: number): Promise<todo> {
